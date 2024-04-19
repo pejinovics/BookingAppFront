@@ -1,0 +1,33 @@
+<div class="main-container">
+	<div class="title-closebtn">
+		<h4>Create digital certificate</h4>
+		<img
+			id="red-flag"
+			src="../../../assets/images/close.png"
+			(click)="closeDialog()"
+		/>
+	</div>
+	<div class="textarea-conatiner">
+		<mat-radio-group
+			aria-label="Select an option"
+			[(ngModel)]="selectedGenerateType"
+		>
+			<mat-radio-button value="1">Autogenerate key pair</mat-radio-button>
+			<mat-radio-button value="2">Import public key</mat-radio-button>
+		</mat-radio-group>
+
+		<div *ngIf="selectedGenerateType === '2'" class="input-container">
+			<input
+				[(ngModel)]="file"
+				type="file"
+				id="upload"
+				hidden
+				class="custom-input"
+				(change)="onFileSelected($event)"
+			/>
+			<label for="upload">Chose file</label>
+			<span>{{ selectedFileName }}</span>
+		</div>
+	</div>
+	<button (click)="sendCertificateRequest()">Send</button>
+</div>

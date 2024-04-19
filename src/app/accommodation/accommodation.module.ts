@@ -26,6 +26,7 @@ import { AnalyticsModule } from '../analytics/analytics.module';
 import { ReportPopupComponent } from './report-popup/report-popup.component';
 import {CommentsModule} from "../comments/comments.module";
 import { AccommodationReservateComponent } from './accommodation-reservate/accommodation-reservate.component';
+import { CreateSslPopupComponent } from './create-ssl-popup/create-ssl-popup.component';
 
 
 @NgModule({
@@ -47,7 +48,8 @@ import { AccommodationReservateComponent } from './accommodation-reservate/accom
   HostReservationsComponent,
   FavouritesComponent,
   ReportPopupComponent,
-  AccommodationReservateComponent
+  AccommodationReservateComponent,
+  CreateSslPopupComponent
   ],
 	imports: [
 		CommonModule,
