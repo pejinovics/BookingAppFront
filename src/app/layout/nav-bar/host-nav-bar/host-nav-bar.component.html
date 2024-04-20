@@ -1,12 +1,17 @@
 <div class="nav-bar-container">
-    <div class="notification-container">
-        <img src="../../../assets/images/notification.svg" [routerLink]="['/notification-for-host']"/>
-        <p *ngIf="haveNotifications">{{numberOfNotifications}}</p>
-    </div>
-    <a  [routerLink]="['/accommodation-create']">CREATE PROPERTY</a>
-    <a  [routerLink]="['/host-reservations']">RESERVATIONS</a>
-    <a  [routerLink]="['/accommodations-for-host']">MY PROPERTIES</a>
-    <a  [routerLink]="['/analytics']">ANALYTICS</a>
-    <a  [routerLink]="['/update-profile']" routerLinkActive="router-link-active">PROFILE</a>
+	<div class="notification-container">
+		<img
+			src="../../../assets/images/notification.svg"
+			[routerLink]="['/notification-for-host']"
+		/>
+		<p *ngIf="haveNotifications">{{ numberOfNotifications }}</p>
+	</div>
+	<a (click)="openDialog()">CREATE SSL</a>
+	<a [routerLink]="['/accommodation-create']">CREATE PROPERTY</a>
+	<a [routerLink]="['/host-reservations']">RESERVATIONS</a>
+	<a [routerLink]="['/accommodations-for-host']">MY PROPERTIES</a>
+	<a [routerLink]="['/analytics']">ANALYTICS</a>
+	<a [routerLink]="['/update-profile']" routerLinkActive="router-link-active"
+		>PROFILE</a
+	>
 </div>
-
