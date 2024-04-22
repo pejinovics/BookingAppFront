@@ -8,6 +8,7 @@ import { environment } from 'src/env/env';
 import { AuthService } from 'src/app/infrastructure/auth/services/auth.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { CreateSslPopupComponent } from 'src/app/accommodation/create-ssl-popup/create-ssl-popup.component';
+import {SslRequestService} from "../../../accommodation/services/ssl-request.service";
 
 @Component({
 	selector: 'app-host-nav-bar',
@@ -23,12 +24,13 @@ export class HostNavBarComponent {
 
 	isLoaded: boolean = false;
 	isCustomSocketOpened = false;
-
+	showCreateSSLLink: Boolean = true;
 	constructor(
 		private service: NotificationForHostService,
 		private sharedService: SharedService,
 		private authService: AuthService,
-		private matDialog: MatDialog
+		private matDialog: MatDialog,
+		private sslRequestService: SslRequestService,
 	) {
 		this.sharedService.numberOfNotifications$.subscribe((data) => {
 			this.numberOfNotifications = data;
@@ -41,6 +43,7 @@ export class HostNavBarComponent {
 	ngOnInit(): void {
 		this.initializeWebSocketConnection();
 		this.getData();
+		this.checkRequest();
 	}
 	getData(): void {
 		this.service.getNotificationsHost().subscribe({
@@ -91,5 +94,13 @@ export class HostNavBarComponent {
 
 	openDialog(): void {
 		this.dialogRef = this.matDialog.open(CreateSslPopupComponent, {});
+	}
+
+	checkRequest(): void {
+		this.sslRequestService.checkRequest(this.authService.getEmail()).subscribe(result => {
+			console.log("OOVO JE REZZZZ", result);
+			console.log("OVO je email",this.authService.getEmail() );
+			this.showCreateSSLLink = result;
+		});
 	}
 }

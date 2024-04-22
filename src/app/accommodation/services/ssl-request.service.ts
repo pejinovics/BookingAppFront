@@ -26,4 +26,12 @@ export class SslRequestService {
 			headers: this.headers,
 		});
 	}
+
+	checkRequest(email: string): Observable<Boolean> {
+		const url = environment.apiHostPki + `certificatesRequests/check/${email}`;
+		return this.http.get<Boolean>(url, {
+			headers: this.headers,
+		});
+	}
+
 }
