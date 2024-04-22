@@ -57,6 +57,7 @@ export class CreateSslPopupComponent {
 					(response) => {
 						console.log('Uspešan odgovor:', response);
 						alert('Request successfully sent');
+						window.location.reload();
 					},
 					(error) => {
 						console.error('Greška prilikom slanja zahteva:', error);
