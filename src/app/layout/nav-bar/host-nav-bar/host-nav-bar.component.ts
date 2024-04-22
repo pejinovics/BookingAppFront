@@ -97,6 +97,7 @@ export class HostNavBarComponent {
 	}
 
 	checkRequest(): void {
+		console.log("asdfasdfasdf");
 		this.sslRequestService.checkRequest(this.authService.getEmail()).subscribe(result => {
 			console.log("OOVO JE REZZZZ", result);
 			console.log("OVO je email",this.authService.getEmail() );
