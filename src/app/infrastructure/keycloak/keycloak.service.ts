@@ -46,7 +46,9 @@ export class KeycloakService {
 	}
 
 	logout() {
-		// this.keycloak.accountManagement();
 		return this.keycloak.logout();
+	}
+	accountManagement() {
+		return this.keycloak.accountManagement();
 	}
 }

@@ -1,11 +1,24 @@
 <div class="nav-bar-container">
-    <div class="notification-container">
-        <img src="../../../assets/images/notification.svg" [routerLink]="['/notification-for-guest']"/>
-        <p *ngIf="haveNotifications">{{numberOfNotifications}}</p>
-    </div>
-    <a  [routerLink]="['/guest-reservations']" routerLinkActive="router-link-active">RESERVATIONS</a>
-    <a  [routerLink]="['/favourites']" routerLinkActive="router-link-active">FAVOURITES</a>
-    <a  [routerLink]="['/update-profile']" routerLinkActive="router-link-active">PROFILE</a>
-	<a  [routerLink]="['/comment-host']" routerLinkActive="router-link-active">COMMENT HOST</a>
-	<a  [routerLink]="['/comment-acc']" routerLinkActive="router-link-active">COMMENT ACC</a>
+	<div class="notification-container">
+		<img
+			src="../../../assets/images/notification.svg"
+			[routerLink]="['/notification-for-guest']"
+		/>
+		<p *ngIf="haveNotifications">{{ numberOfNotifications }}</p>
+	</div>
+	<a
+		[routerLink]="['/guest-reservations']"
+		routerLinkActive="router-link-active"
+		>RESERVATIONS</a
+	>
+	<a [routerLink]="['/favourites']" routerLinkActive="router-link-active"
+		>FAVOURITES</a
+	>
+	<a (click)="accountDetails()">PROFILE</a>
+	<a [routerLink]="['/comment-host']" routerLinkActive="router-link-active"
+		>COMMENT HOST</a
+	>
+	<a [routerLink]="['/comment-acc']" routerLinkActive="router-link-active"
+		>COMMENT ACC</a
+	>
 </div>
