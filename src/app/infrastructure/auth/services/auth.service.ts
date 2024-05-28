@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { AuthResponse } from '../model/auth-response.model';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { environment } from '../../../../env/env';
-import { Registration } from '../model/registration.model';
+import { Address, Registration } from '../model/registration.model';
 import { User } from '../model/user.model';
 import { KeycloakService } from '../../keycloak/keycloak.service';
 
@@ -46,6 +46,46 @@ export class AuthService {
 		// }
 		const accessToken: any = this.keycloakService.profile?.token;
 		const helper = new JwtHelperService();
+		var name = helper.decodeToken(accessToken).given_name;
+		var lastname = helper.decodeToken(accessToken).family_name;
+		var email = helper.decodeToken(accessToken).email;
+		this.userExists(this.getEmail()).subscribe(
+			(response) => {
+				if (!response) {
+					const address: Address = {
+						street: 'Patrisa Lumumbe',
+						city: 'Vranje',
+						postalCode: 17500,
+						state: 'Srbija',
+					};
+					const user: Registration = {
+						name: name,
+						lastname: lastname,
+						address: address,
+						userType: 'GUEST',
+						email: email,
+						password: 'ivica',
+						phoneNumber: '0638019625',
+					};
+					this.register(user).subscribe(
+						(exists) => {
+							if (exists) {
+								console.log('User exists!');
+							} else {
+								console.log('User does not exist.');
+							}
+						},
+						(error) => {
+							console.error('Error occurred:', error);
+						}
+					);
+				}
+			},
+			(error) => {
+				console.error('Error checking user availability:', error);
+			}
+		);
+
 		var roles = helper.decodeToken(accessToken).realm_access.roles;
 		if (roles.includes('GUEST')) {
 			return 'GUEST';
@@ -74,12 +114,10 @@ export class AuthService {
 	}
 
 	getEmail(): string {
-		if (this.isLoggedIn()) {
-			const accessToken: any = localStorage.getItem('user');
-			const helper = new JwtHelperService();
-			return helper.decodeToken(accessToken).sub;
-		}
-		return '';
+		const accessToken: any = this.keycloakService.profile?.token;
+		const helper = new JwtHelperService();
+		var email = helper.decodeToken(accessToken).email;
+		return email;
 	}
 
 	isLoggedIn(): boolean {
@@ -90,6 +128,14 @@ export class AuthService {
 		this.user$.next(this.getRole());
 	}
 
+	userExists(email: String) {
+		return this.http.get<boolean>(
+			environment.apiHost + 'register/userExists/' + email,
+			{
+				headers: this.headers,
+			}
+		);
+	}
 	register(user: Registration): Observable<User> {
 		return this.http.post<User>(environment.apiHost + 'register', user, {
 			headers: this.headers,
