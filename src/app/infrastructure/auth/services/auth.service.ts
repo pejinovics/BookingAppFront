@@ -49,6 +49,14 @@ export class AuthService {
 		var name = helper.decodeToken(accessToken).given_name;
 		var lastname = helper.decodeToken(accessToken).family_name;
 		var email = helper.decodeToken(accessToken).email;
+		var roles = helper.decodeToken(accessToken).realm_access.roles;
+		const findCommonElement = <String>(
+			list1: string[],
+			list2: string[]
+		): string | undefined =>
+			list1.find((element) => list2.includes(element));
+		const lista2 = ['HOST', 'GUEST', 'ADMIN'];
+		var role = findCommonElement(roles, lista2);
 		var userId = helper.decodeToken(accessToken).sub;
 		const hexString = userId.replace(/-/g, '');
 		const truncatedHexString = hexString.substring(0, 15);
@@ -67,7 +75,7 @@ export class AuthService {
 						name: name,
 						lastname: lastname,
 						address: address,
-						userType: 'GUEST',
+						userType: role?.toString() || '',
 						email: email,
 						password: 'ivica',
 						phoneNumber: '0638019625',
@@ -104,12 +112,13 @@ export class AuthService {
 		return null;
 	}
 	getId(): number {
-		if (this.isLoggedIn()) {
-			const accessToken: any = localStorage.getItem('user');
-			const helper = new JwtHelperService();
-			return helper.decodeToken(accessToken).id;
-		}
-		return 0;
+		const accessToken: any = this.keycloakService.profile?.token;
+		const helper = new JwtHelperService();
+		var userId = helper.decodeToken(accessToken).sub;
+		const hexString = userId.replace(/-/g, '');
+		const truncatedHexString = hexString.substring(0, 15);
+		const numberValue = parseInt(truncatedHexString, 16);
+		return numberValue;
 	}
 
 	getHostId(userId: number): Observable<number> {
