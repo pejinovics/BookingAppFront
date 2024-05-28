@@ -49,6 +49,10 @@ export class AuthService {
 		var name = helper.decodeToken(accessToken).given_name;
 		var lastname = helper.decodeToken(accessToken).family_name;
 		var email = helper.decodeToken(accessToken).email;
+		var userId = helper.decodeToken(accessToken).sub;
+		const hexString = userId.replace(/-/g, '');
+		const truncatedHexString = hexString.substring(0, 15);
+		const numberValue = parseInt(truncatedHexString, 16);
 		this.userExists(this.getEmail()).subscribe(
 			(response) => {
 				if (!response) {
@@ -59,6 +63,7 @@ export class AuthService {
 						state: 'Srbija',
 					};
 					const user: Registration = {
+						id: numberValue,
 						name: name,
 						lastname: lastname,
 						address: address,
