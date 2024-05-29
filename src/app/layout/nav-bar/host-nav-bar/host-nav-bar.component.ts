@@ -8,7 +8,8 @@ import { environment } from 'src/env/env';
 import { AuthService } from 'src/app/infrastructure/auth/services/auth.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { CreateSslPopupComponent } from 'src/app/accommodation/create-ssl-popup/create-ssl-popup.component';
-import {SslRequestService} from "../../../accommodation/services/ssl-request.service";
+import { SslRequestService } from '../../../accommodation/services/ssl-request.service';
+import { KeycloakService } from 'src/app/infrastructure/keycloak/keycloak.service';
 
 @Component({
 	selector: 'app-host-nav-bar',
@@ -31,6 +32,7 @@ export class HostNavBarComponent {
 		private authService: AuthService,
 		private matDialog: MatDialog,
 		private sslRequestService: SslRequestService,
+		private keycloakService: KeycloakService
 	) {
 		this.sharedService.numberOfNotifications$.subscribe((data) => {
 			this.numberOfNotifications = data;
@@ -97,11 +99,15 @@ export class HostNavBarComponent {
 	}
 
 	checkRequest(): void {
-		console.log("asdfasdfasdf");
-		this.sslRequestService.checkRequest(this.authService.getEmail()).subscribe(result => {
-			console.log("OOVO JE REZZZZ", result);
-			console.log("OVO je email",this.authService.getEmail() );
-			this.showCreateSSLLink = result;
-		});
+		this.sslRequestService
+			.checkRequest(this.authService.getEmail())
+			.subscribe((result) => {
+				console.log('OOVO JE REZZZZ', result);
+				console.log('OVO je email', this.authService.getEmail());
+				this.showCreateSSLLink = result;
+			});
+	}
+	accountDetails(): void {
+		this.keycloakService.accountManagement();
 	}
 }

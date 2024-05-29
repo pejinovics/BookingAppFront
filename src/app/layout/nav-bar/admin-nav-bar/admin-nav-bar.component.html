@@ -1,5 +1,15 @@
-<a [routerLink]="['/block-user']" routerLinkActive="router-link-active">REPORTED USERS</a>
-<a [routerLink]="['/report-comments']" routerLinkActive="router-link-active">REPORTED COMMENTS</a>
-<a [routerLink]="['/approve-comments']" routerLinkActive="router-link-active">APPROVE COMMENTS</a>
-<a [routerLink]="['/accommodation-approving']" routerLinkActive="router-link-active">ACCOMMODATIONS</a>
-<a [routerLink]="['/update-admin']" routerLinkActive="router-link-active">PROFILE</a>
+<a [routerLink]="['/block-user']" routerLinkActive="router-link-active"
+	>REPORTED USERS</a
+>
+<a [routerLink]="['/report-comments']" routerLinkActive="router-link-active"
+	>REPORTED COMMENTS</a
+>
+<a [routerLink]="['/approve-comments']" routerLinkActive="router-link-active"
+	>APPROVE COMMENTS</a
+>
+<a
+	[routerLink]="['/accommodation-approving']"
+	routerLinkActive="router-link-active"
+	>ACCOMMODATIONS</a
+>
+<a (click)="accountDetails()">PROFILE</a>
