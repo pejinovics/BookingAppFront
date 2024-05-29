@@ -18,6 +18,7 @@ import {
 	AccommodationUpdatePicturesComponent
 } from "../accommodation-update-pictures/accommodation-update-pictures.component";
 import {PriceListUpdateComponent} from "../price-list-update/price-list-update.component";
+import {SanitizeService} from "../../../security/sanitize.service";
 
 @Component({
   selector: 'app-accommodation-update',
@@ -34,7 +35,7 @@ export class AccommodationUpdateComponent {
 	accommodation: FormGroup;
 	constructor(private mapService: MapService, private cdr: ChangeDetectorRef,
 				private accommodationService: AccommodationService, private authService: AuthService,
-				private route: ActivatedRoute,private router: Router) {
+				private route: ActivatedRoute,private router: Router, private sanitizeService: SanitizeService) {
 		for (let i = 1; i <= 18; i++) {
 			this.buttonStates[`button${i}`] = { button1: false, button2: false };
 		}
@@ -355,10 +356,10 @@ export class AccommodationUpdateComponent {
 				if(this.files.length >= 5){
 					const address: Address = {
 						id: null,
-						street: this.accommodation.value.street || "",
-						city: this.accommodation.value.city || "",
-						postalCode: this.accommodation.value.postalCode || "",
-						state: this.accommodation.value.state || "",
+						street: this.sanitizeService.sanitize(this.accommodation.value.street || ""),
+						city: this.sanitizeService.sanitize(this.accommodation.value.city || ""),
+						postalCode: this.sanitizeService.sanitize(this.accommodation.value.postalCode || ""),
+						state: this.sanitizeService.sanitize(this.accommodation.value.state || ""),
 						latitude: 0,
 						longitude: 0
 
@@ -366,9 +367,9 @@ export class AccommodationUpdateComponent {
 					// @ts-ignore
 					const acc: Accommodation = {
 						id: null,
-						title: this.accommodation.value.title || "",
+						title: this.sanitizeService.sanitize(this.accommodation.value.title || ""),
 						type: this.mapAccommodationType(this.accommodation.value.type) as AccommodationType,
-						description: this.accommodation.value.description || "",
+						description: this.sanitizeService.sanitize(this.accommodation.value.description || ""),
 						address: address,
 						cancellationPolicy: this.mapCancellationPolicy(this.accommodation.value.cancellationPolicy) as CancellationPolicy,
 						isPriceForEntireAcc: this.mapPaymentMethod(this.accommodation.value.isPriceForEntireAcc),

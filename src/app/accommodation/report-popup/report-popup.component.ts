@@ -3,6 +3,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ReportUserService } from '../services/report-user.service';
 import { UserReport } from '../model/user-report';
 import { Reservation } from '../model/reservation.model';
+import {SanitizeService} from "../../../security/sanitize.service";
 
 @Component({
   selector: 'app-report-popup',
@@ -17,7 +18,7 @@ export class ReportPopupComponent {
   reservationId: number = 0;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<ReportPopupComponent>,
-        private reportService: ReportUserService) {
+        private reportService: ReportUserService, private sanitizeService: SanitizeService) {
     this.firstname = data.name;
     this.lastName = data.lastName;
     this.userReportedId = data.userReportedId;
@@ -38,7 +39,7 @@ export class ReportPopupComponent {
       return;
     }
     const userReport: UserReport = {
-      reason:this.reportReason,
+      reason:this.sanitizeService.sanitize(this.reportReason),
       userReportedId:this.userReportedId,
       userReportingId: this.userReportingId,
       reservationId: this.reservationId
