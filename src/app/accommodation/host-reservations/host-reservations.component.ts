@@ -12,6 +12,7 @@ import { NotificationForGuestService } from 'src/app/notification/services/notif
 import { ReportPopupComponent } from '../report-popup/report-popup.component';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { endOf } from 'ngx-bootstrap/chronos';
+import {SanitizeService} from "../../../security/sanitize.service";
 
 @Component({
   selector: 'app-host-reservations',
@@ -25,9 +26,9 @@ export class HostReservationsComponent {
   dataSource!: MatTableDataSource<Reservation>;
   displayedColumns: string[] = ['select', 'guest', 'numberOfCancellation', 'accommodation', 'startDate', 'endDate', 'status', 'price'];
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator; 
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
-  
+
   isBtnDisabled: boolean = true;
 
   canReportUser(reservation: Reservation):boolean {
@@ -63,11 +64,11 @@ export class HostReservationsComponent {
   selectionToggle(row: any) {
     if (this.selection.isSelected(row)) {
       this.selection.deselect(row);
-      this.updateButtonState(); 
+      this.updateButtonState();
     } else {
       this.selection.clear();
       this.selection.select(row);
-      this.updateButtonState(); 
+      this.updateButtonState();
     }
   }
 
@@ -81,11 +82,11 @@ export class HostReservationsComponent {
     this.searchForm.reset();
   }
 
-  constructor(private reservationService: ReservationService, 
-    private fb: FormBuilder, private authService: AuthService, 
+  constructor(private reservationService: ReservationService,
+    private fb: FormBuilder, private authService: AuthService,
     private cdr:ChangeDetectorRef, private zone: NgZone,
     private notificationService:NotificationForGuestService,
-    private matDialog: MatDialog) {}
+    private matDialog: MatDialog, private sanitizeService: SanitizeService) {}
 
   searchForm: FormGroup = this.fb.group({
     search: [''],
@@ -93,7 +94,7 @@ export class HostReservationsComponent {
     endDate: [''],
     status: ['']
   });
-  
+
   ngOnInit(): void {
     this.getHostReservations({hostId : this.authService.getId()});
   }
@@ -116,7 +117,7 @@ export class HostReservationsComponent {
     if (status === ReservationStatus.ACCEPTED) {
       backgroundColor = '#D4F8D3';
     } else if (status === ReservationStatus.CANCELLED) {
-      backgroundColor = '#FF4158';         
+      backgroundColor = '#FF4158';
     } else if(status === ReservationStatus.PENDING) {
       backgroundColor = '#F8F4D3';
     }else if(status === ReservationStatus.EXPIRED) {
@@ -124,7 +125,7 @@ export class HostReservationsComponent {
     }else if(ReservationStatus.DECLINED) {
       backgroundColor = '#CA0A0A';
     }
-  
+
     return {
       'background-color': backgroundColor,
       'color': '#575C61',
@@ -135,7 +136,7 @@ export class HostReservationsComponent {
     };
   }
 
- 
+
   dateWrong:boolean = false;
 
   search(): void{
@@ -147,7 +148,7 @@ export class HostReservationsComponent {
 
     const startDateValue = this.searchForm.get('startDate')?.value;
     const endDateValue = this.searchForm.get('endDate')?.value;
-    const search = this.searchForm.get('search')?.value;
+    const search = this.sanitizeService.sanitize(this.searchForm.get('search')?.value);
     const status = this.searchForm.get('status')?.value;
 
     if (startDateValue !== null && startDateValue !== '') {

@@ -10,6 +10,7 @@ import { AuthService } from 'src/app/infrastructure/auth/services/auth.service';
 import { CancellationPolicy } from '../model/cancellation-policy.model';
 import { ReportPopupComponent } from '../report-popup/report-popup.component';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import {SanitizeService} from "../../../security/sanitize.service";
 
 @Component({
   selector: 'app-guest-reservations',
@@ -20,19 +21,19 @@ export class GuestReservationsComponent {
   dialogRef!: MatDialogRef<ReportPopupComponent>;
 
 
-  constructor(private reservationService: ReservationService, 
-    private fb: FormBuilder, private authService: AuthService, 
+  constructor(private reservationService: ReservationService,
+    private fb: FormBuilder, private authService: AuthService,
     private cdr:ChangeDetectorRef, private zone: NgZone,
     private matDialog: MatDialog,
-    private cdRef: ChangeDetectorRef) {}
+    private cdRef: ChangeDetectorRef, private sanitizeService: SanitizeService) {}
 
   reservations: Reservation[] = [];
   dataSource!: MatTableDataSource<Reservation>;
   displayedColumns: string[] = ['select','accommodation','host','cancellationPolicy', 'startDate', 'endDate', 'numberOfGuests', 'status', 'price'];
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator; 
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
-  
+
   isCancelBtnDisabled: boolean = true;
   isDeleteBtnDisabled: boolean = true;
   reservationAfterReport: Reservation = {};
@@ -72,23 +73,23 @@ export class GuestReservationsComponent {
       this.isAllSelected() ?
         this.selection.clear() :
         this.dataSource.data.forEach(row => this.selection.select(row));
-      
+
       this.updateCancelBtnDisabled();
       this.updateDeleteBtnDisabled();
-      this.cdr.detectChanges(); 
+      this.cdr.detectChanges();
     });
-   
+
   }
-  
+
   selectionToggle(row: Reservation) {
     this.zone.run(() => {
       this.selection.toggle(row);
       this.updateDeleteBtnDisabled();
       this.updateCancelBtnDisabled();
-      this.cdr.detectChanges(); 
+      this.cdr.detectChanges();
     });
   }
-  
+
   isAllSelected() {
     const numSelected = this.selection.selected.length;
     const numRows = this.dataSource.data.length;
@@ -120,7 +121,7 @@ export class GuestReservationsComponent {
         }
       }
   })
-    
+
   }
   onDelete():void {
     this.selection.selected.forEach(reservation => {
@@ -135,7 +136,7 @@ export class GuestReservationsComponent {
         }
       })
     })
-    
+
   }
 
   refreshTable():void {
@@ -143,7 +144,7 @@ export class GuestReservationsComponent {
     this.searchForm.reset();
   }
 
-  
+
 
   searchForm: FormGroup = this.fb.group({
     search: [''],
@@ -151,7 +152,7 @@ export class GuestReservationsComponent {
     endDate: [''],
     status: ['']
   });
-  
+
   ngOnInit(): void {
     this.getGuestReservations({guestId : this.authService.getId()});
   }
@@ -174,7 +175,7 @@ export class GuestReservationsComponent {
     if (status === ReservationStatus.ACCEPTED) {
       backgroundColor = '#D4F8D3';
     } else if (status === ReservationStatus.CANCELLED) {
-      backgroundColor = '#FF4158';         
+      backgroundColor = '#FF4158';
     } else if(status === ReservationStatus.PENDING) {
       backgroundColor = '#F8F4D3';
     }else if(status === ReservationStatus.EXPIRED) {
@@ -182,7 +183,7 @@ export class GuestReservationsComponent {
     }else if(ReservationStatus.DECLINED) {
       backgroundColor = '#CA0A0A';
     }
-  
+
     return {
       'background-color': backgroundColor,
       'color': '#575C61',
@@ -193,7 +194,7 @@ export class GuestReservationsComponent {
     };
   }
 
- 
+
   dateWrong:boolean = false;
 
   search(): void{
@@ -205,7 +206,7 @@ export class GuestReservationsComponent {
 
     const startDateValue = this.searchForm.get('startDate')?.value;
     const endDateValue = this.searchForm.get('endDate')?.value;
-    const search = this.searchForm.get('search')?.value;
+    const search = this.sanitizeService.sanitize(this.searchForm.get('search')?.value);
     const status = this.searchForm.get('status')?.value;
 
     if (startDateValue !== null && startDateValue !== '') {

@@ -3,6 +3,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {ReportUserService} from "../../accommodation/services/report-user.service";
 import {UserReport} from "../../accommodation/model/user-report";
 import {CommentsService} from "../services/comments.service";
+import {SanitizeService} from "../../../security/sanitize.service";
 
 @Component({
   selector: 'app-report-comment-popup',
@@ -18,7 +19,7 @@ export class ReportCommentPopupComponent {
 	title: string = "";
 
 	constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<ReportCommentPopupComponent>,
-				private commentsService: CommentsService) {
+				private commentsService: CommentsService, private sanitizeService: SanitizeService) {
 		this.firstname = data.name;
 		this.lastName = data.lastName;
 		this.commentAccId = data.commentAccId;
@@ -67,7 +68,7 @@ export class ReportCommentPopupComponent {
 		this.idToSend = this.isAcc ? this.commentAccId : this.commentHostId;
 
 		if (this.isAcc){
-			this.commentsService.setReportMessageAcc(this.commentAccId as number, this.reportReason).subscribe({
+			this.commentsService.setReportMessageAcc(this.commentAccId as number, this.sanitizeService.sanitize(this.reportReason)).subscribe({
 				next:(_) => {
 					this.reportCommentAboutAcc(this.commentAccId);
 					console.log("Uspesno sam reportovao sa popupom")
@@ -75,7 +76,7 @@ export class ReportCommentPopupComponent {
 			})
 		}
 		else {
-			this.commentsService.setReportMessageHost(this.commentHostId as number, this.reportReason).subscribe({
+			this.commentsService.setReportMessageHost(this.commentHostId as number, this.sanitizeService.sanitize(this.reportReason)).subscribe({
 				next:(_) => {
 					this.reportCommentAboutHost(this.commentHostId);
 					console.log("Uspesno sam reportovao sa popupom")
